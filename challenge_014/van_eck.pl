@@ -1,24 +1,32 @@
 #!/usr/bin/env perl
+
+# Perl Weekly Challenge 014-1
+# https://perlweeklychallenge.org/blog/perl-weekly-challenge-014/
+
+# Write a script to generate Van Eck’s sequence starts with 0. For
+# more information, please check out wikipedia page at
+# https://en.wikipedia.org/wiki/Van_Eck%27s_sequence
+
 use strict;
 use warnings;
 use feature 'say';
 
-my @seen;
-my %first;
-my $val = 0;
-$first{0} = 1;
+my $N = shift @ARGV || 10;
+my @vals;
+my $next = 0;
 
-for my $n (0..10) {
-    say "$n $val";
-    if (defined $first{$val}) {
-        $val = 0;
-        delete $first{$val};
-    } elsif (exists $seen[$val]) {
-        $val = $n - $seen[$val];
-    } else {
-        $first{$val} = 1;
-        $val = 0;
+for my $n (0..$N) {
+    push @vals, $next;
+    say "$n $vals[$n]";
+
+    # have we seen it before?
+    $next = 0;
+    for (my $i = $n-1; $i >= 0; $i--) {
+        if ($vals[$i] == $vals[$n]) {
+            $next = $n - $i;
+            last;
+        }
     }
-#    $val = exists $seen[$val] ? $val = $n - $seen[$val] : 0;
-    $seen[$val] = $val;
 }
+
+say join ", ", @vals;
